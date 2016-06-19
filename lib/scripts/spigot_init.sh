@@ -55,6 +55,14 @@ if [ -n "$ESSENTIALS" ]; then
   if [ "$ESSENTIALS" = "true" ]; then
     echo "Downloading Essentials..."
     wget -O /$SPIGOT_HOME/plugins/Essentials-2.x-SNAPSHOT.jar https://hub.spigotmc.org/jenkins/job/Spigot-Essentials/lastStableBuild/artifact/Essentials/target/Essentials-2.x-SNAPSHOT.jar
+    wget -O /$SPIGOT_HOME/plugins/EssentialsProtect-2.x-SNAPSHOT.jar https://hub.spigotmc.org/jenkins/job/Spigot-Essentials/lastStableBuild/artifact/EssentialsProtect/target/EssentialsProtect-2.x-SNAPSHOT.jar
+    if [ -n "$CREEPERBLOCKDISABLE" ]; then
+        if [ "$CREEPERBLOCKDISABLE" = "true" ]; then
+            if [ -f /$SPIGOT_HOME/plugins/Essentials/config.yml ]; then
+                sed -i "s/creeper-blockdamage: .*/creeper-blockdamage: $CREEPERBLOCKDISABLE/" /$SPIGOT_HOME/plugins/Essentials/config.yml
+            fi
+        fi
+    fi
   else
     echo "Removing Essentials..."
     rm -f /$SPIGOT_HOME/plugins/Essentials-2.x-SNAPSHOT.jar
