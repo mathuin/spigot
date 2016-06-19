@@ -55,9 +55,11 @@ if [ -n "$ESSENTIALS" ]; then
   if [ "$ESSENTIALS" = "true" ]; then
     echo "Downloading Essentials..."
     wget -O /$SPIGOT_HOME/plugins/Essentials-2.x-SNAPSHOT.jar https://hub.spigotmc.org/jenkins/job/Spigot-Essentials/lastStableBuild/artifact/Essentials/target/Essentials-2.x-SNAPSHOT.jar
+    wget -O /$SPIGOT_HOME/plugins/EssentialsProtect-2.x-SNAPSHOT.jar https://hub.spigotmc.org/jenkins/job/Spigot-Essentials/lastStableBuild/artifact/EssentialsProtect/target/EssentialsProtect-2.x-SNAPSHOT.jar
   else
     echo "Removing Essentials..."
     rm -f /$SPIGOT_HOME/plugins/Essentials-2.x-SNAPSHOT.jar
+    rm -f /$SPIGOT_HOME/plugins/EssentialsProtect-2.x-SNAPSHOT.jar
   fi
 fi
 
