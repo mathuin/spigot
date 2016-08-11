@@ -1,5 +1,5 @@
-FROM ubuntu:14.04
-MAINTAINER AshDev <ashdevfr@gmail.com>
+FROM ubuntu:xenial
+MAINTAINER Jack Twilley <mathuin@gmail.com>
 
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -9,7 +9,7 @@ RUN apt-get update && \
   software-properties-common \
   && rm -rf /var/lib/apt/lists/*
 RUN add-apt-repository ppa:webupd8team/java -y
-RUN echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | sudo /usr/bin/debconf-set-selections
+RUN echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | /usr/bin/debconf-set-selections
 RUN apt-get update && \
   apt-get install -y --no-install-recommends \
   curl \
