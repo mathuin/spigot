@@ -18,17 +18,38 @@ if [ ! -e /$SPIGOT_HOME/eula.txt ]; then
   fi
 fi
 
-#only build if jar file does not exist
-if [ ! -f /$SPIGOT_HOME/spigot.jar ]; then
+# Some variables are mandatory.
+if [ -z "$REV" ]; then
+    REV="latest"
+fi
+
+# Some variables depend on other variables.
+
+# Creeper block disable is a feature of the Essentials plugin.
+if [ -n "$CREEPERBLOCKDISABLE" ]; then
+    if [ "$CREEPERBLOCKDISABLE" = "true" ]; then
+	ESSENTIALS=true
+    fi
+fi
+
+# Force rebuild of spigot.jar if REV is latest.
+rm -f /$SPIGOT_HOME/spigot-latest.jar
+
+# Only build a new spigot.jar if a jar for this REV does not already exist.
+if [ ! -f /$SPIGOT_HOME/spigot-$REV.jar ]; then
   echo "Building spigot jar file, be patient"
   mkdir -p /$SPIGOT_HOME/build
   cd /$SPIGOT_HOME/build
-  wget https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar
+  wget -O /$SPIGOT_HOME/build/BuildTools.jar https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar
   HOME=/$SPIGOT_HOME/build java -jar BuildTools.jar --rev $REV
-  cp /$SPIGOT_HOME/build/Spigot/Spigot-Server/target/spigot-*.jar /$SPIGOT_HOME/spigot.jar
+  cp /$SPIGOT_HOME/build/Spigot/Spigot-Server/target/spigot-*.jar /$SPIGOT_HOME/spigot-$REV.jar
   mkdir -p /$SPIGOT_HOME/plugins
 fi
 
+# Select the spigot.jar for this particular rev.
+rm -f /$SPIGOT_HOME/spigot.jar && ln -s /$SPIGOT_HOME/spigot-$REV.jar /$SPIGOT_HOME/spigot.jar
+
+# Install Dynmap and associated tweaks.
 if [ -n "$DYNMAP" ]; then
   if [ "$DYNMAP" = "true" ]; then
     echo "Downloading Dynmap..."
@@ -51,6 +72,7 @@ if [ -n "$DYNMAP" ]; then
   fi
 fi
 
+# Install Essentials.
 if [ -n "$ESSENTIALS" ]; then
   if [ "$ESSENTIALS" = "true" ]; then
     echo "Downloading Essentials..."
@@ -69,6 +91,7 @@ if [ -n "$ESSENTIALS" ]; then
   fi
 fi
 
+# Install Clearlag. 
 if [ -n "$CLEARLAG" ]; then
   if [ "$CLEARLAG" = "true" ]; then
     echo "Downloading ClearLag..."
@@ -79,6 +102,7 @@ if [ -n "$CLEARLAG" ]; then
   fi
 fi
 
+# Install PermissionsEx.
 if [ -n "$PERMISSIONSEX" ]; then
   if [ "$PERMISSIONSEX" = "true" ]; then
     echo "Downloading PermissionsEx..."
@@ -89,6 +113,7 @@ if [ -n "$PERMISSIONSEX" ]; then
   fi
 fi
 
+# Install configuration files.
 if [ ! -f /$SPIGOT_HOME/white-list.txt ]
 then
     cp $STATIC_DIR/white-list.txt /$SPIGOT_HOME/
@@ -99,6 +124,7 @@ then
   cp $STATIC_DIR/server.properties /$SPIGOT_HOME/
 fi
 
+# Update configuration file settings.
 if [ -n "$MOTD" ]; then
   sed -i "/motd\s*=/ c motd=$MOTD" /$SPIGOT_HOME/server.properties
 fi
@@ -202,10 +228,12 @@ if [ -n "$MODE" ]; then
   sed -i "/gamemode\s*=/ c gamemode=$MODE" /$SPIGOT_HOME/server.properties
 fi
 
+# Configure ops file.
 if [ -n "$OPS" -a ! -e /$SPIGOT_HOME/ops.txt.converted ]; then
   echo $OPS | awk -v RS=, '{print}' >> /$SPIGOT_HOME/ops.txt
 fi
 
+# Server icon?
 if [ -n "$ICON" -a ! -e /$SPIGOT_HOME/server-icon.png ]; then
   echo "Using server icon from $ICON..."
   # Not sure what it is yet...call it "img"
@@ -219,12 +247,12 @@ if [ -n "$ICON" -a ! -e /$SPIGOT_HOME/server-icon.png ]; then
   fi
 fi
 
-# chance owner to minecraft
+# Change owner to minecraft.
 chown -R minecraft.minecraft /$SPIGOT_HOME/
 
 cd /$SPIGOT_HOME/
 
 su - minecraft -c "exec java $JVM_OPTS -jar spigot.jar"
 
-# fallback to root and run shell if spigot don't start/forced exit
+# Fallback to root and run shell if spigot don't start/forced exit.
 bash

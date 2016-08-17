@@ -38,15 +38,22 @@ EXPOSE 25565
 EXPOSE 8123
 VOLUME ["/minecraft"]
 
-ENV UID=1000
+# Variables for overall setup
+ENV UID 1000
 
-ENV MOTD A Minecraft Server Powered by Spigot & Docker
+# Variables for compilation
 ENV REV latest
+
+# Variables for plugins
+ENV DYNMAP true
+ENV ESSENTIALS false
+ENV PERMISSIONSEX false
+ENV CLEARLAG false
+
+# Variables for config files
+ENV MOTD A Minecraft Server Powered by Spigot & Docker
+
+# Variables for execution
 ENV JVM_OPTS -Xmx1024M -Xms1024M
-# replace these with defaults in spigot_init.sh
-ENV LEVEL=world PVP=true VDIST=10 OPPERM=4 NETHER=true FLY=false MAXBHEIGHT=256 NPCS=true WLIST=false ANIMALS=true HC=false ONLINE=true RPACK='' DIFFICULTY=3 CMDBLOCK=false MAXPLAYERS=20 MONSTERS=true STRUCTURES=true SPAWNPROTECTION=16
 
-#ENV DYNMAP=true ESSENTIALS=false PERMISSIONSEX=false CLEARLAG=false
-
-#set default command
 CMD /spigot_init.sh
