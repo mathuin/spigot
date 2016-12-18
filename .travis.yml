@@ -1,0 +1,17 @@
+sudo: required
+branches:
+    only:
+        - master
+services:
+    - docker
+before_install:
+    - docker build -t $IMAGE .
+script:
+    - docker run -d -e EULA=true -e DYNMAP=true -p 25565:25565 -p 8123:8123 $IMAGE
+    # - curl -s -D - http://localhost:8123 -o /dev/null | grep "200 OK"
+    # - curl -s -D - http://localhost:8123 | grep "Dynamic Map"
+deploy:
+    provider: script
+    script: scripts/deploy.sh
+    on:
+        branch: master
