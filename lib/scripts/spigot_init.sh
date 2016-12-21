@@ -79,10 +79,10 @@ fi
 
 # Install Essentials.
 if [ -n "$ESSENTIALS" ]; then
+  ESSENTIALS_JAR=EssentialsX-2.0.1.jar
+  EPROTECT_JAR=EssentialsXProtect-2.0.1.jar
   if [ "$ESSENTIALS" = "true" ]; then
     echo "Downloading Essentials..."
-    ESSENTIALS_JAR=EssentialsX-2.0.1.jar
-    EPROTECT_JAR=EssentialsXProtect-2.0.1.jar
     wget -O $SPIGOT_HOME/plugins/$ESSENTIALS_JAR $ESSENTIALS_JENKINS/artifact/Essentials/target/$ESSENTIALS_JAR
     wget -O $SPIGOT_HOME/plugins/$EPROTECT_JAR $ESSENTIALS_JENKINS/artifact/EssentialsProtect/target/$EPROTECT_JAR
     if [ -n "$CREEPERBLOCKDISABLE" ]; then
@@ -96,6 +96,7 @@ if [ -n "$ESSENTIALS" ]; then
   else
     echo "Removing Essentials..."
     rm -f $SPIGOT_HOME/plugins/$ESSENTIALS_JAR
+    rm -f $SPIGOT_HOME/plugins/$EPROTECT_JAR
   fi
 fi
 
